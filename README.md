@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 =======
 # 🗓️ MediDash - Sistema de Agendamiento de Citas Médicas
 
@@ -87,7 +87,7 @@ Historial de citas
 
 🧑‍💻 Desarrollado por
 [Alejandro Velasco] – alejandrovdv489@gmail.com
-GitHub: @tu-usuario
+GitHub: @AlejoDV-a
 
 📝 Licencia
 Este proyecto está bajo la licencia MIT.
@@ -97,12 +97,12 @@ Copiar
 Editar
 
 ---
->>>>>>> 0a79754350721c9649e9be602bf671ef136dc12b
 
 
 
 
-<<<<<<< HEAD
+
+
 /app                -> rutas y páginas
 /components         -> componentes reutilizables
 /lib                -> funciones utilitarias, helpers
@@ -167,5 +167,5 @@ Tests unitarios con jest o integración con playwright
 
 
 
->>>>>>> 0a79754350721c9649e9be602bf671ef136dc12b
+
 

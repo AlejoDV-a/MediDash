@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model appointment_types {
+  id               Int            @id @default(autoincrement())
+  name             String         @db.VarChar(100)
+  duration_minutes Int            @default(30)
+  description      String?
+  color            String?        @db.VarChar(20)
+  appointments     appointments[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model appointments {
+  id                  Int               @id @default(autoincrement())
+  patient_id          Int
+  medico_id           Int
+  appointment_type_id Int
+  date                DateTime          @db.Date
+  time                DateTime          @db.Time(6)
+  status              String            @default("scheduled") @db.VarChar(20)
+  notes               String?
+  created_at          DateTime?         @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime?         @default(now()) @db.Timestamptz(6)
+  appointment_types   appointment_types @relation(fields: [appointment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  medicos             medicos           @relation(fields: [medico_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  patients            patients          @relation(fields: [patient_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model medicos {
+  id           Int            @id @default(autoincrement())
+  email        String         @db.VarChar(255)
+  name         String?        @db.VarChar(255)
+  username     String?        @db.VarChar(255)
+  specialty    String?        @db.VarChar(100)
+  availability Json?
+  appointments appointments[]
+}
+
+model patients {
+  id              Int            @id @default(autoincrement())
+  name            String         @db.VarChar(255)
+  email           String?        @db.VarChar(255)
+  phone           String?        @db.VarChar(20)
+  date_of_birth   DateTime?      @db.Date
+  address         String?
+  medical_history String?
+  created_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime?      @default(now()) @db.Timestamptz(6)
+  appointments    appointments[]
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
+}
+
+model users {
+  id       Int     @id @default(autoincrement())
+  email    String  @db.VarChar(255)
+  name     String? @db.VarChar(255)
+  username String? @db.VarChar(255)
+}

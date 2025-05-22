@@ -18,29 +18,32 @@ export async function GET() {
 
   return NextResponse.json(citas);
 }
-export async function POST(request: Request) {
-  try {
-    const data = await request.json();
 
-    const nuevaCita = await prisma.appointments.create({
+export async function POST(req: Request) {
+  try {
+    const data = await req.json()
+
+    // Validación opcional
+    if (!data.appointmentTypeId || isNaN(Number(data.appointmentTypeId))) {
+      return NextResponse.json({ error: "Invalid appointment type ID" }, { status: 400 })
+    }
+
+    const newAppointment = await prisma.appointments.create({
       data: {
         patient_id: parseInt(data.patientId),
         medico_id: parseInt(data.medicoId),
         appointment_type_id: parseInt(data.appointmentTypeId),
         date: new Date(data.date),
-        time: new Date(`${data.date}T${data.time}`),
-        notes: data.notes || '',
-        status: 'scheduled', 
+        time: new Date(data.time),
+        status: data.status || "scheduled",
+        notes: data.notes || null,
       },
-    });
+    })
 
-  return NextResponse.json(nuevaCita);
-}catch (error: unknown) {
-    console.error('❌ Error al crear la cita:', error);
-    return NextResponse.json(
-      { message: 'Error al crear la cita' },
-      { status: 500 }
-    );
+    return NextResponse.json(newAppointment)
+  } catch (error) {
+    console.error("Error creating appointment:", error)
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
 

@@ -5,12 +5,20 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recha
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { getMonthlyStats } from "@/app/actions"
 
+
 interface OverviewProps {
   className?: string
 }
 
 export function Overview({ className }: OverviewProps) {
-  const [data, setData] = useState([])
+  // Define the MonthlyStats type based on the expected structure from getMonthlyStats
+  type MonthlyStats = {
+    name: string
+    appointments: number
+    new_patients: number
+  }
+
+  const [data, setData] = useState<MonthlyStats[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

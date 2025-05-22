@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { getAppointmentsByDate } from "@/app/actions"
+
+
 
 type Appointment = {
   id: string | number
@@ -20,10 +21,22 @@ type Appointment = {
   duration: number
   status: string
 }
+type RawAppointment = {
+  id: number
+  patient_name: string
+  time: string
+  duration: number
+  type: string
+  status: string
+  patient_id: number
+  doctor_name: string
+  initials: string
+  avatar: string
+}
 
 export function AppointmentsCalendar() {
   const [date, setDate] = useState<Date | undefined>(new Date())
-  const [view, setView] = useState<"day" | "week">("day")
+  const [, setView] = useState<"day" | "week">("day")
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -34,8 +47,19 @@ export function AppointmentsCalendar() {
       setLoading(true)
       try {
         const formattedDate = format(date, "yyyy-MM-dd")
-        const data = await getAppointmentsByDate(formattedDate)
-        setAppointments(data)
+        const data = await getAppointmentsByDate(formattedDate) as RawAppointment[]
+        // Ensure each appointment has all required fields
+        const normalizedData: Appointment[] = data.map((item: RawAppointment ) => ({
+          id: String(item.id),
+          time: item.time,
+          avatar: item.avatar || "/placeholder.svg",
+          patient_name: item.patient_name,
+          initials: `${item.patient_name.charAt(0)}${item.patient_name.split(" ")[1]?.charAt(0) || ""}`,
+          type: item.type,
+          duration: item.duration,
+          status: item.status,
+        }))
+        setAppointments(normalizedData)
       } catch (error) {
         console.error("Failed to load appointments:", error)
       } finally {
@@ -66,20 +90,14 @@ export function AppointmentsCalendar() {
         </Button>
       </div>
       <div className="w-full">
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          className="w-full rounded-md border"
-        />
       </div>
     </CardContent>
   </Card>
 
   {/* Lista de citas */}
   
-      {/* contenido de la lista */}
-       {/* Appointment List */}
+    
+  
       <Card className="min-h-[400px]">
         <CardContent className="p-6 space-y-6">
           <div className="flex items-center justify-between">

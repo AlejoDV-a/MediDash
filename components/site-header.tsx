@@ -2,7 +2,6 @@
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { ModeToggle } from "./ui/mode-toggle"
-import { motion } from 'framer-motion';
 
 export function SiteHeader() {
   return (

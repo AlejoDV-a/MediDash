@@ -18,10 +18,24 @@ import {
 import { ChevronLeft, ChevronRight, MoreHorizontal, Search } from "lucide-react"
 import { getAllPatients } from "@/app/actions"
 
+type Patient = {
+  id: string | number
+  name: string
+  age: number
+  gender: string
+  phone: string
+  email?: string
+  avatar?: string
+  initials?: string
+  last_visit?: string
+  condition?: string
+  status: "stable" | "improving" | "critical" | string
+}
+
 export function PatientsList() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [patients, setPatients] = useState([])
+  const [patients, setPatients] = useState<Patient[]>([])
   const [loading, setLoading] = useState(true)
   const patientsPerPage = 10
 
@@ -115,7 +129,7 @@ export function PatientsList() {
                           patient.status === "stable"
                             ? "default"
                             : patient.status === "improving"
-                              ? "success"
+                              ? "secondary"
                               : "destructive"
                         }
                       >

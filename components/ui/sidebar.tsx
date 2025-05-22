@@ -7,8 +7,7 @@ import { PanelLeftIcon } from "lucide-react"
 
 
 
-import Link from 'next/link';
-import { CalendarPlus } from 'lucide-react'; // ícono opcional
+
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

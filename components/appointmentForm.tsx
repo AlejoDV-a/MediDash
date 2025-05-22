@@ -3,7 +3,7 @@
 export function AppointmentForm() {
   return (
     <form>
-      {/* Aquí tus campos */}
+  
     </form>
   );
 }

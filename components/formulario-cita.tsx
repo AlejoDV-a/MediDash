@@ -13,7 +13,6 @@ export default function FormularioCita() {
   const {
     register,
     handleSubmit,
-    control,
     reset,
     setValue,
     formState: { errors },

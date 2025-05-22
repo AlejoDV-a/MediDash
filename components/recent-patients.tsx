@@ -9,10 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
 import { getRecentPatients } from "@/app/actions"
+import { Patient } from "@/lib/types"
 
 export function RecentPatients() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [patients, setPatients] = useState([])
+  const [patients, setPatients] = useState<Patient[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -101,7 +102,7 @@ export function RecentPatients() {
                         patient.status === "stable"
                           ? "default"
                           : patient.status === "improving"
-                            ? "success"
+                            ? "secondary"
                             : "destructive"
                       }
                     >

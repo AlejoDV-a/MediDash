@@ -35,10 +35,10 @@ export async function POST(request: Request) {
     });
 
   return NextResponse.json(nuevaCita);
-}catch (error: any) {
+}catch (error: unknown) {
     console.error('❌ Error al crear la cita:', error);
     return NextResponse.json(
-      { message: 'Error al crear la cita', error: error.message },
+      { message: 'Error al crear la cita' },
       { status: 500 }
     );
   }

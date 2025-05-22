@@ -11,14 +11,29 @@ interface UpcomingAppointmentsProps {
 }
 
 export function UpcomingAppointments({ className }: UpcomingAppointmentsProps) {
-  const [appointments, setAppointments] = useState([])
+  interface Appointment {
+    id: string
+    patient_name: string
+    avatar?: string
+    initials?: string
+    time: string
+    type: string
+    status: string
+  }
+
+  const [appointments, setAppointments] = useState<Appointment[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function loadAppointments() {
       try {
         const data = await getTodayAppointments()
-        setAppointments(data)
+        setAppointments(
+          data.map((appointment) => ({
+            ...appointment,
+            id: String(appointment.id),
+          }))
+        )
       } catch (error) {
         console.error("Failed to load appointments:", error)
       } finally {
@@ -32,7 +47,7 @@ export function UpcomingAppointments({ className }: UpcomingAppointmentsProps) {
   return (
     <Card className={className}>
       <CardHeader>
-        <CardTitle>Today's Appointments</CardTitle>
+        <CardTitle>Today&apos;s Appointments</CardTitle>
         <CardDescription>You have {appointments.length} appointments scheduled for today</CardDescription>
       </CardHeader>
       <CardContent>

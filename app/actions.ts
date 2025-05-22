@@ -1,8 +1,13 @@
 "use server"
 
 import { sql } from "@/lib/db"
-
+import { Patient, Appointment, MonthlyStats } from "@/lib/types"
 // Fetch dashboard stats
+
+
+
+
+
 export async function getDashboardStats() {
   const patientCountQuery = "SELECT COUNT(*) as count FROM patients"
   const todayAppointmentsQuery = `SELECT COUNT(*) as count FROM appointments WHERE appointment_date = CURRENT_DATE`
@@ -49,9 +54,9 @@ export async function getRecentPatients() {
     LIMIT 5
   `
 
-  const patients = await sql.query(query)
+  const patients = await sql.query(query) as Patient[]
 
-  return patients.map((patient: any) => ({
+  return patients.map((patient) => ({
     ...patient,
     initials: `${patient.name.charAt(0)}${patient.name.split(" ")[1]?.charAt(0) || ""}`,
     avatar: `/placeholder.svg?height=32&width=32`,
@@ -59,40 +64,27 @@ export async function getRecentPatients() {
 }
 
 // Fetch all patients
-export async function getAllPatients() {
-  const query = `
-    SELECT 
-      p.id, 
-      p.first_name || ' ' || p.last_name as name, 
-      p.gender,
-      EXTRACT(YEAR FROM AGE(CURRENT_DATE, p.date_of_birth)) as age,
-      p.email,
-      p.phone,
-      TO_CHAR(MAX(a.appointment_date), 'Mon DD, YYYY') as last_visit,
-      p.medical_history as condition,
-      CASE 
-        WHEN p.id IN (SELECT patient_id FROM vital_signs WHERE blood_pressure_systolic > 140 OR blood_pressure_diastolic > 90) THEN 'needs attention'
-        WHEN p.id IN (SELECT patient_id FROM medical_records WHERE record_date > CURRENT_DATE - INTERVAL '30 days') THEN 'improving'
-        ELSE 'stable'
-      END as status
-    FROM 
-      patients p
-    LEFT JOIN 
-      appointments a ON p.id = a.patient_id
-    GROUP BY 
-      p.id, p.first_name, p.last_name, p.gender, p.date_of_birth, p.email, p.phone, p.medical_history
-    ORDER BY 
-      p.last_name, p.first_name
-  `
-
+export async function getAllPatients(): Promise<Patient[]> {
+  const query = `...`
   const patients = await sql.query(query)
 
-  return patients.map((patient: any) => ({
+
+  return patients.map((patient): Patient => ({
     ...patient,
     initials: `${patient.name.charAt(0)}${patient.name.split(" ")[1]?.charAt(0) || ""}`,
     avatar: `/placeholder.svg?height=32&width=32`,
+    id: 0,
+    name: "",
+    gender: "",
+    age: 0,
+    email: "",
+    phone: "",
+    last_visit: "",
+    condition: "",
+    status: "needs attention"
   }))
 }
+
 
 // Fetch today's appointments
 export async function getTodayAppointments() {
@@ -115,9 +107,9 @@ export async function getTodayAppointments() {
       a.appointment_time
   `
 
-  const appointments = await sql.query(query)
+  const appointments = await sql.query(query) as Appointment[]
 
-  return appointments.map((appointment: any) => ({
+  return appointments.map((appointment) => ({
     ...appointment,
     initials: `${appointment.patient_name.charAt(0)}${appointment.patient_name.split(" ")[1]?.charAt(0) || ""}`,
     avatar: `/placeholder.svg?height=32&width=32`,
@@ -150,7 +142,7 @@ export async function getAppointmentsByDate(date: string) {
 
   const appointments = await sql.query(query, [date])
 
-  return appointments.map((appointment: any) => ({
+  return appointments.map((appointment) => ({
     ...appointment,
     initials: `${appointment.patient_name.charAt(0)}${appointment.patient_name.split(" ")[1]?.charAt(0) || ""}`,
     avatar: `/placeholder.svg?height=32&width=32`,
@@ -159,6 +151,8 @@ export async function getAppointmentsByDate(date: string) {
 
 // Get monthly statistics for the overview chart
 export async function getMonthlyStats() {
+
+
   const query = `
     WITH months AS (
       SELECT generate_series(
@@ -202,6 +196,7 @@ export async function getMonthlyStats() {
     ORDER BY 
       m.month
   `
+  
 
-  return await sql.query(query)
+return sql.query(query) as unknown as MonthlyStats[]
 }

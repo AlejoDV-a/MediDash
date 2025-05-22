@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless"
 export const sql = neon(process.env.DATABASE_URL!)
 
 // Helper function to execute raw SQL queries with tagged template literals
-export async function executeQuery(query: string, params: any[] = []) {
+export async function executeQuery(query: string, params: unknown[] = []) {
   try {
     // Use sql.query for parameterized queries
     return await sql.query(query, params)
